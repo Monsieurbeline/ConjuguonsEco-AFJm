@@ -31,3 +31,48 @@ const Amb={on:false,T:[],start(){if(!S.set.music||this.on)return;if(AU.ok){this.
   const m=this.m=c.createGain();m.gain.setValueAtTime(0,c.currentTime);m.gain.linearRampToValueAtTime(.55,c.currentTime+2.5);m.connect(c.destination);
   const b=c.createBuffer(1,c.sampleRate*3,c.sampleRate),d=b.getChannelData(0);let l=0;for(let i=0;i<d.length;i++){l=(l+.02*(Math.random()*2-1))/1.02;d[i]=l*3.2}
   const n=this.n=c.createBufferSource();n.buffer=b;n.loop=true;const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=520;const g=c.createGain();g.gain.value=.5;n.connect(f);f.connect(g);g.connect(m);n.start();
+  this.pad=[130.8,196].map(fr=>{const o=c.createOscillator(),pg=c.createGain();o.frequency.value=fr;pg.gain.value=.035;o.connect(pg);pg.connect(m);o.start();return o});
+  const sc=[523,587,659,784,880,784,659,587];let i=0;
+  this.T.push(setInterval(()=>{if(Math.random()<.5){const o=c.createOscillator(),g=c.createGain(),t=c.currentTime;o.type='triangle';o.frequency.value=sc[i%8]*(Math.random()<.2?.5:1);g.gain.setValueAtTime(.05,t);g.gain.exponentialRampToValueAtTime(.001,t+1);o.connect(g);g.connect(m);o.start(t);o.stop(t+1)}i+=Math.random()<.6?1:2},520));
+  const chirp=()=>{if(!this.on)return;const t0=c.currentTime,k=1+Math.floor(Math.random()*3),base=2000+Math.random()*1500;for(let j=0;j<k;j++){const o=c.createOscillator(),g=c.createGain(),t=t0+j*.16;o.frequency.setValueAtTime(base,t);o.frequency.exponentialRampToValueAtTime(base*1.35,t+.09);o.frequency.exponentialRampToValueAtTime(base*1.1,t+.14);g.gain.setValueAtTime(.025,t);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.connect(g);g.connect(m);o.start(t);o.stop(t+.16)}this.T.push(setTimeout(chirp,2500+Math.random()*5000))};this.T.push(setTimeout(chirp,1500))},
+ stop(){if(!this.on)return;this.on=false;if(this.file){this.file=false;AU.pause();return}this.T.forEach(t=>{clearInterval(t);clearTimeout(t)});this.T=[];const c=AC,m=this.m,n=this.n,p=this.pad;try{m.gain.cancelScheduledValues(c.currentTime);m.gain.linearRampToValueAtTime(0,c.currentTime+.4);setTimeout(()=>{try{n.stop();p.forEach(o=>o.stop());m.disconnect()}catch(e){}},500)}catch(e){}}};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)Amb.stop();else if(S.set.music&&started)Amb.start()});
+let started=false;const unlockAudio=()=>{if(started)return;started=true;ac();Amb.start()};['pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,unlockAudio));
+function speak(t){if(!('speechSynthesis' in window)){toast('La lecture audio n’est pas disponible sur cet appareil.');return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';u.rate=.9;speechSynthesis.speak(u)}
+function burst(n=26){if(S.set.rm)return;const C=['#43a51c','#a6e05a','#f47b20','#ffc928','#5bb8e6'];for(let i=0;i<n;i++){const e=document.createElement('i');e.className='cf';e.setAttribute('aria-hidden','true');e.innerHTML=ic(i%3?'leaf':'star');e.style.cssText=`left:${innerWidth/2}px;top:${innerHeight*.55}px;color:${C[i%5]};--dx:${(Math.random()-.5)*340}px;--dy:${-90-Math.random()*240}px`;document.body.appendChild(e);setTimeout(()=>e.remove(),1200)}}
+let tt;function toast(m){const t=$('#toast');t.innerHTML=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2800)}
+function award(id){if(S.badges.includes(id))return;S.badges.push(id);save();setTimeout(()=>{toast(ic(BADGES[id][0])+' Badge : '+BADGES[id][1]);sfx.win()},600)}
+function touchStreak(){const t=today();S.days=S.days||{};S.days[t]=1;if(S.last===t)return;const d=S.last?dayDiff(S.last,t):9;
+ if(d==1)S.streak++;else if(d==2&&S.freeze>0){S.freeze--;S.streak++;setTimeout(()=>toast(ic('flame')+' Ton gel de série a sauvé ta série !'),900)}else S.streak=1;
+ S.last=t;if(S.streak>=3)award('streak3')}
+/* mascotte */
+const MIMG={idle:'img/tinet.png',ok:'img/tinet-ok.png',win:'img/tinet-ok.png',cheer:'img/tinet-cheer.png',ko:'img/tinet.png',sad:'img/tinet.png',think:'img/tinet.png'};
+const MLAB={idle:'Ti-Nèt sourit',ok:'Ti-Nèt lève le pouce',win:'Ti-Nèt lève le pouce, ravi',cheer:'Ti-Nèt applaudit',ko:'Ti-Nèt est gêné',sad:'Ti-Nèt est triste',think:'Ti-Nèt réfléchit'};
+const spk=st=>`<svg class="ov tw" aria-hidden="true" viewBox="0 0 24 24" style="${st};color:#ffc928"><use href="#i-star"/></svg>`;
+const DROP='<path d="M12 2s-7 8-7 13a7 7 0 0014 0c0-5-7-13-7-13z" fill="#6ccdf2" stroke="#2b8fd6" stroke-width="1.5"/>';
+function ovl(m){
+ if(m=='ko')return `<svg class="ov dr" aria-hidden="true" viewBox="0 0 24 24" style="right:4%;top:12%;width:24%">${DROP}</svg>`;
+ if(m=='sad')return `<svg class="ov" aria-hidden="true" viewBox="0 0 48 28" style="left:-4%;top:-18%;width:62%"><path d="M12 22a8 8 0 010-16 10 10 0 0119-2 8 8 0 011 18z" fill="#9fb3c4" stroke="#5f7386" stroke-width="1.5"/></svg><svg class="ov dr" aria-hidden="true" viewBox="0 0 24 24" style="left:8%;top:22%;width:14%">${DROP}</svg><svg class="ov dr" aria-hidden="true" style="animation-delay:.4s;left:24%;top:24%;width:12%" viewBox="0 0 24 24">${DROP}</svg>`;
+ if(m=='think')return '<span class="ov qm" aria-hidden="true">?</span>';
+ if(m=='ok'||m=='cheer'||m=='win')return spk('left:0;top:8%;width:20%')+spk('right:2%;top:2%;width:26%;animation-delay:.3s')+spk('right:-2%;top:46%;width:16%;animation-delay:.6s');return''}
+const mascot=(m='idle',px=100)=>`<div class="mas ${m}" role="img" aria-label="${MLAB[m]}" style="--s:${px}px"><img src="${MIMG[m]}" alt="">${ovl(m)}</div>`;
+let mt;function setMas(m,ms=1800){const t=$('#tn');if(!t)return;t.className='mas '+m;t.setAttribute('aria-label',MLAB[m]);t.innerHTML=`<img src="${MIMG[m]}" alt="">`+ovl(m);clearTimeout(mt);if(m!='idle')mt=setTimeout(()=>setMas('idle',0),ms)}
+/* objectifs */
+function td(){const t=today();if(!S.td||S.td.d!==t)S.td={d:t,v:0,c:0,cl:{}};return S.td}
+const quests=()=>{const t=td();return[{id:'v',t:'Réussis 10 verbes',v:Math.min(t.v,10),max:10,r:5},{id:'c',t:'Fais un combo de 3',v:t.c?1:0,max:1,r:5},{id:'d',t:'Relève le défi du jour',v:S.daily[today()]?1:0,max:1,r:10}]};
+function claimQuests(){const t=td();quests().forEach(q=>{if(q.v>=q.max&&!t.cl[q.id]){t.cl[q.id]=1;S.coins+=q.r;setTimeout(()=>toast(ic('coin')+' Objectif atteint : +'+q.r),1400)}})}
+function nextStep(){for(let i=S.start||0;i<D.length;i++){if(!lvlOpen(i))continue;for(let k=0;k<D[i].steps.length;k++)if(!S.done[D[i].id+'-'+k]&&(k==0||S.done[D[i].id+'-'+(k-1)]))return[i,k]}return null}
+function preload(on){const A=['img/titre-fond.webp','img/enseigne.png','img/logo.png','img/tinet.png','img/tinet-ok.png','img/tinet-cheer.png','img/logo-afj.jpg','img/logo-oif.jpg','img/banniere.jpg',...D.map(l=>`img/bg-${l.id}.jpg`)];let n=0;A.forEach(u=>{const i=new Image();i.onload=i.onerror=()=>on(++n/A.length);i.src=u})}
+/* plein écran : demandé au premier toucher (le navigateur l’exige), réglable dans le profil.
+   Dans l’application installée lancée en plein écran par le manifest, il n’y a rien à demander. */
+const fsInstalled=()=>matchMedia('(display-mode: fullscreen)').matches;
+const fsCan=()=>!!(document.fullscreenEnabled&&document.documentElement.requestFullscreen);
+function fsApply(){try{
+ if(S.set.fsc){if(fsCan()&&!document.fullscreenElement&&!fsInstalled())return document.documentElement.requestFullscreen({navigationUI:'hide'}).then(()=>true,()=>false)}
+ else if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
+}catch(e){}return Promise.resolve(false)}
+let fsArm=true;
+function fsTap(){if(!fsArm||!S.set.fsc)return;fsApply().then(ok=>{if(ok)fsArm=false})}
+['pointerup','touchend','keydown'].forEach(t=>document.addEventListener(t,fsTap,{passive:true}));
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&!document.hidden)fsArm=false});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)fsArm=true});
