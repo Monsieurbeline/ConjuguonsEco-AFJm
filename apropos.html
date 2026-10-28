@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ConjuguonsEco · Alliance Française de Jacmel</title>
+<meta name="description" content="ConjuguonsEco : jeu éducatif de conjugaison française né du projet Sentinelles Alerte Sargasses, porté par l'Alliance Française de Jacmel avec le soutien de l'OIF.">
+
+<!-- Font Awesome 6 (gratuit) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+
+<!-- Données structurées FAQ pour Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Le jeu est-il gratuit ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui, ConjuguonsEco est entièrement gratuit, sans publicité et sans achat intégré."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Faut-il créer un compte ou donner son nom ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Le jeu fonctionne sans inscription, sans email et sans collecte de données personnelles. La progression est enregistrée uniquement sur l'appareil."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Le jeu fonctionne-t-il sans Internet ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui, une fois installé sur l'écran d'accueil, le jeu fonctionne hors-ligne."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quels niveaux de français sont couverts ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le jeu couvre les niveaux A1 à B2, en suivant la progression de la méthode Édito."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "À qui s'adresse le jeu ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Aux élèves et apprenants de français, aux enseignants, et à toute personne qui souhaite réviser ses conjugaisons."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Peut-on l'utiliser en classe ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Le jeu a été testé avec des communautés scolaires du Sud'Est d'Haïti et peut servir de support d'entraînement individuel ou collectif."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Sur quels appareils le jeu fonctionne-t-il ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sur smartphone, tablette et ordinateur, via un navigateur récent. Une version installable (PWA) est proposée sur Android et Chrome."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment signaler un bug ou proposer une amélioration ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Via l'Alliance Française de Jacmel, ou directement sur le dépôt GitHub du projet."
+      }
+    }
+  ]
+}
+</script>
+
+<style>
+  :root{
+    --vert:#3d8b2f; --vert-fonce:#245a1a; --vert-doux:#e8f2e2;
+    --orange:#d96b1e; --orange-fonce:#a84f12;
+    --ink:#1f2e18; --mut:#5a6b52; --line:#dfe8d8;
+    --paper:#fafcf8; --white:#ffffff;
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+    --max:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:72px}
+  body{
+    font-family:var(--sans);font-weight:400;line-height:1.7;color:var(--ink);
+    background:var(--paper);
+  }
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+  /* ---------- HEADER ---------- */
+  .site-header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(250,252,248,.92);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+    transition:box-shadow .3s;
+  }
+  .site-header.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.06)}
+  .header-inner{
+    max-width:var(--max);margin:0 auto;padding:0 28px;
+    display:flex;align-items:center;justify-content:space-between;
+    height:68px;gap:20px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--vert-fonce)}
+  .brand-mark{
+    width:40px;height:40px;border-radius:50%;overflow:hidden;flex:none;
+    border:2px solid var(--orange);background:#f5e6c8;
+    display:grid;place-items:center;
+  }
+  .brand-mark img{width:100%;height:100%;object-fit:cover}
+  .brand-text{font-weight:700;font-size:18px;letter-spacing:-.02em;line-height:1.15}
+  .brand-text small{display:block;font-size:10.5px;font-weight:500;color:var(--mut);letter-spacing:.4px;text-transform:uppercase}
+
+  .nav-toggle{display:none;background:none;border:1px solid var(--line);border-radius:8px;
+    width:42px;height:42px;font-size:18px;color:var(--vert-fonce);cursor:pointer}
+  .site-nav{display:flex;gap:2px;align-items:center}
+  .site-nav a{
+    text-decoration:none;color:var(--ink);font-weight:500;font-size:14px;
+    padding:8px 12px;border-radius:8px;transition:.15s;white-space:nowrap;
+  }
+  .site-nav a:hover{background:var(--vert-doux);color:var(--vert-fonce)}
+  .site-nav a.cta{
+    background:var(--orange);color:#fff;font-weight:600;margin-left:8px;
+    box-shadow:0 2px 0 var(--orange-fonce);
+  }
+  .site-nav a.cta:hover{background:var(--orange-fonce);color:#fff}
+  .site-nav a.cta i{margin-right:6px}
+
+  @media(max-width:960px){
+    .site-nav a{padding:8px 10px;font-size:13.5px}
+  }
+  @media(max-width:860px){
+    .nav-toggle{display:grid;place-items:center}
+    .site-nav{
+      display:none;position:absolute;top:68px;left:0;right:0;
+      background:var(--paper);flex-direction:column;align-items:stretch;
+      padding:12px 20px 20px;gap:2px;
+      border-bottom:1px solid var(--line);box-shadow:0 8px 20px rgba(0,0,0,.08);
+    }
+    .site-nav.open{display:flex}
+    .site-nav a{padding:12px 14px;font-size:14px}
+    .site-nav a.cta{margin:8px 0 0;text-align:center}
+  }
+
+  /* ---------- HERO PARALLAX ---------- */
+  .hero{
+    position:relative;min-height:92vh;display:flex;align-items:center;
+    justify-content:center;text-align:center;overflow:hidden;
+    padding:120px 28px 80px;
+  }
+  .hero-bg{
+    position:absolute;inset:0;z-index:0;
+    background-image:url('img/launch-bg.jpg');
+    background-size:cover;background-position:center 30%;
+    will-change:transform;
+  }
+  .hero-bg::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(
+      180deg,
+      rgba(20,35,15,.55) 0%,
+      rgba(20,35,15,.35) 40%,
+      rgba(250,252,248,.0) 75%,
+      rgba(250,252,248,.95) 100%
+    );
+  }
+  .hero-content{position:relative;z-index:1;max-width:780px}
+  .hero .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.35);color:#fff;
+    border-radius:100px;padding:6px 20px;font-size:11.5px;font-weight:600;
+    letter-spacing:1.2px;text-transform:uppercase;margin-bottom:24px;
+    backdrop-filter:blur(4px);
+  }
+  .hero .eyebrow i{color:#ffd27a;font-size:12px}
+  .hero h1{
+    font-family:var(--serif);font-size:clamp(42px,9vw,76px);
+    line-height:1.0;color:#fff;letter-spacing:-.02em;
+    margin-bottom:12px;font-weight:700;
+    text-shadow:0 2px 30px rgba(0,0,0,.3);
+  }
+  .hero .subtitle{
+    font-size:clamp(16px,2.4vw,20px);color:rgba(255,255,255,.92);
+    max-width:620px;margin:0 auto 32px;font-weight:400;line-height:1.6;
+    text-shadow:0 1px 12px rgba(0,0,0,.3);
+  }
+  .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+    font-family:var(--sans);font-weight:600;font-size:15px;
+    padding:14px 30px;border-radius:12px;border:0;cursor:pointer;transition:.15s;
+  }
+  .btn-primary{
+    background:var(--orange);color:#fff;
+    box-shadow:0 3px 0 var(--orange-fonce),0 8px 24px rgba(0,0,0,.15);
+  }
+  .btn-primary:active{transform:translateY(2px);box-shadow:0 1px 0 var(--orange-fonce)}
+  .btn-ghost{
+    background:rgba(255,255,255,.12);color:#fff;
+    border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(4px);
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,.2)}
+  .hero-partners{
+    display:flex;gap:16px;justify-content:center;align-items:center;
+    flex-wrap:wrap;margin-top:48px;
+  }
+  .hero-partners img{height:28px;width:auto;border-radius:4px;background:rgba(255,255,255,.9);padding:3px 8px}
+
+  @media(max-width:600px){.hero{min-height:85vh;padding-top:100px}}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:72px 0;position:relative}
+  .section-alt{background:var(--vert-doux)}
+  .section-title{
+    font-family:var(--serif);font-size:clamp(26px,4vw,36px);
+    color:var(--vert-fonce);margin-bottom:10px;line-height:1.15;
+    font-weight:700;letter-spacing:-.01em;
+    display:flex;align-items:center;gap:12px;
+  }
+  .section-title i{color:var(--orange);font-size:.8em}
+  .section-lead{font-size:16.5px;color:var(--mut);max-width:680px;margin-bottom:36px;line-height:1.6}
+
+  .card{
+    background:var(--white);border:1px solid var(--line);border-radius:16px;
+    padding:28px 30px;margin-bottom:16px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04);
+  }
+  .card h3{
+    font-size:17px;color:var(--vert-fonce);margin-bottom:10px;font-weight:600;
+    display:flex;align-items:center;gap:8px;
+  }
+  .card h3 i{color:var(--orange);font-size:14px}
+  .card p{margin-bottom:12px;font-size:15px;color:#3a4a32}
+  .card p:last-child{margin-bottom:0}
+
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+
+  .stat{
+    background:var(--white);border:1px solid var(--line);border-radius:14px;
+    padding:22px 16px;text-align:center;
+  }
+  .stat i{color:var(--orange);font-size:20px;margin-bottom:6px;display:block}
+  .stat b{display:block;font-family:var(--serif);font-size:32px;color:var(--vert-fonce);line-height:1.1}
+  .stat span{font-size:12px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+
+  .list-clean{list-style:none;padding:0;margin:0}
+  .list-clean li{padding:10px 0 10px 28px;position:relative;border-bottom:1px solid var(--line);font-size:15px}
+  .list-clean li:last-child{border-bottom:0}
+  .list-clean li::before{
+    font-family:"Font Awesome 6 Free";font-weight:900;content:"\f00c";
+    position:absolute;left:0;top:12px;color:var(--vert);font-size:12px;
+  }
+
+  .level-card{
+    border-radius:14px;padding:22px;color:#fff;font-weight:600;
+    border:1px solid rgba(255,255,255,.2);
+    position:relative;
+  }
+  .level-card i{
+    position:absolute;right:16px;top:16px;font-size:26px;opacity:.35;
+  }
+  .level-card b{display:block;font-size:18px;margin-bottom:6px}
+  .level-card small{display:block;font-weight:400;opacity:.92;font-size:13.5px;line-height:1.4}
+
+  blockquote{
+    padding:24px 28px;background:var(--white);
+    border-left:4px solid var(--orange);border-radius:0 14px 14px 0;
+    font-family:var(--serif);font-style:italic;font-size:18px;
+    color:var(--ink);line-height:1.7;position:relative;
+  }
+  blockquote::before{
+    content:"\f10d";font-family:"Font Awesome 6 Free";font-weight:900;
+    position:absolute;top:16px;right:22px;color:var(--vert-doux);
+    font-size:40px;font-style:normal;line-height:1;
+  }
+  blockquote footer{
+    margin-top:12px;font-family:var(--sans);font-style:normal;
+    font-weight:600;color:var(--mut);font-size:13px;
+    display:flex;align-items:center;gap:6px;
+  }
+
+  .team-list{list-style:none;padding:0;margin:0}
+  .team-list li{
+    display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);
+    font-size:15px;align-items:center;flex-wrap:wrap;
+  }
+  .team-list li:last-child{border-bottom:0}
+  .team-list li > i{
+    width:32px;height:32px;border-radius:50%;background:var(--vert-doux);
+    color:var(--vert-fonce);display:grid;place-items:center;font-size:13px;
+    flex-shrink:0;
+  }
+  .team-list b{min-width:170px;color:var(--vert-fonce);flex-shrink:0;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px}
+
+  .link-grid{display:flex;flex-direction:column;gap:10px}
+  .link-grid a{
+    display:flex;align-items:center;gap:14px;background:var(--white);
+    border:1px solid var(--line);border-radius:12px;padding:16px 20px;
+    color:var(--ink);font-weight:500;text-decoration:none;font-size:14.5px;
+    transition:.15s;
+  }
+  .link-grid a:hover{border-color:var(--vert);background:var(--vert-doux)}
+  .link-grid a > i{
+    width:32px;height:32px;border-radius:8px;background:var(--vert-doux);
+    color:var(--vert-fonce);display:grid;place-items:center;font-size:14px;
+    flex-shrink:0;
+  }
+  .link-grid a:hover > i{background:var(--white)}
+  .link-grid a .fa-arrow-up-right-from-square{
+    margin-left:auto;font-size:11px;color:var(--mut);
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq-list{display:flex;flex-direction:column;gap:10px;max-width:820px}
+  .faq-item{
+    background:var(--white);border:1px solid var(--line);border-radius:12px;
+    overflow:hidden;transition:.15s;
+  }
+  .faq-item[open]{border-color:var(--vert)}
+  .faq-item summary{
+    cursor:pointer;padding:18px 22px;font-weight:600;font-size:15.5px;
+    color:var(--vert-fonce);display:flex;align-items:center;gap:12px;
+    list-style:none;user-select:none;
+  }
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary > i{
+    font-size:12px;color:var(--orange);transition:transform .2s;flex-shrink:0;
+  }
+  .faq-item[open] summary > i{transform:rotate(90deg)}
+  .faq-item summary:hover{background:var(--vert-doux)}
+  .faq-answer{padding:0 22px 20px 46px;font-size:14.5px;color:#3a4a32;line-height:1.7}
+  .faq-answer p:last-child{margin-bottom:0}
+
+  /* ---------- SECTION ILLUSTRATION BG ---------- */
+  .section-illus{position:relative;overflow:hidden}
+  .section-illus .illus-bg{
+    position:absolute;inset:0;z-index:0;
+    background-size:cover;background-position:center;
+    opacity:.12;
+  }
+  .section-illus .wrap{position:relative;z-index:1}
+
+  /* ---------- FOOTER ---------- */
+  .site-footer{background:var(--vert-fonce);color:#fff;padding:56px 0 0;margin-top:0}
+  .footer-grid{
+    display:grid;grid-template-columns:2fr 1fr 1fr;gap:44px;
+    max-width:var(--max);margin:0 auto;padding:0 28px;
+  }
+  @media(max-width:700px){.footer-grid{grid-template-columns:1fr;gap:32px}}
+  .site-footer h4{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;
+    margin-bottom:14px;color:rgba(255,255,255,.6);font-weight:600;
+    display:flex;align-items:center;gap:8px}
+  .site-footer h4 i{color:var(--orange);font-size:13px}
+  .site-footer p,.site-footer a{color:rgba(255,255,255,.78);font-size:13.5px;line-height:1.8;text-decoration:none}
+  .site-footer a:hover{color:#fff;text-decoration:underline}
+  .site-footer p i{color:rgba(255,255,255,.5);width:16px;margin-right:6px;font-size:12px}
+  .footer-bottom{
+    border-top:1px solid rgba(255,255,255,.12);margin-top:40px;padding:22px 28px;
+    text-align:center;font-size:12.5px;color:rgba(255,255,255,.5);
+  }
+  .footer-logos{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .footer-logos img{height:26px;width:auto;border-radius:3px;background:rgba(255,255,255,.9);padding:2px 6px}
+
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .hero-bg{transform:none!important}
+  }
+
+  /* bouton haut */
+  #topBtn{
+    position:fixed;right:22px;bottom:22px;width:46px;height:46px;
+    background:var(--orange);color:#fff;border:0;border-radius:50%;
+    cursor:pointer;font-size:16px;z-index:90;
+    box-shadow:0 3px 0 var(--orange-fonce),0 6px 18px rgba(0,0,0,.2);
+    display:none;place-items:center;transition:.2s;
+  }
+  #topBtn:hover{background:var(--orange-fonce)}
+  #topBtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--orange-fonce)}
+  #topBtn.show{display:grid}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header" id="header">
+  <div class="header-inner">
+    <a href="#accueil" class="brand">
+      <span class="brand-mark"><img src="img/logo.png" alt="" onerror="this.remove()"></span>
+      <span class="brand-text">ConjuguonsEco<small>Alliance Française de Jacmel</small></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <nav class="site-nav" id="siteNav" aria-label="Navigation principale">
+      <a href="#projet">Le projet</a>
+      <a href="#jeu">Le jeu</a>
+      <a href="#sargasses">Sargasses</a>
+      <a href="#equipe">Équipe</a>
+      <a href="#developpeur">Le développeur</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://monsieurbeline.github.io/ConjuguonsEco-AFJ/" class="cta" target="_blank" rel="noopener">
+        <i class="fa-solid fa-play"></i>Jouer
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO PARALLAX ============ -->
+<section class="hero" id="accueil">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-content">
+    <div class="eyebrow"><i class="fa-solid fa-award"></i>Projet soutenu par l'OIF · 2021–2023</div>
+    <h1>ConjuguonsEco</h1>
+    <p class="subtitle">
+      Réviser ses conjugaisons françaises en découvrant l'écocitoyenneté,
+      le patrimoine et la biodiversité d'Haïti.
+    </p>
+    <div class="hero-actions">
+      <a href="https://monsieurbeline.github.io/ConjuguonsEco-AFJ/" class="btn btn-primary" target="_blank" rel="noopener">
+        <i class="fa-solid fa-gamepad"></i>Jouer maintenant
+      </a>
+      <a href="#projet" class="btn btn-ghost">
+        <i class="fa-solid fa-arrow-down"></i>Découvrir le projet
+      </a>
+    </div>
+    <div class="hero-partners">
+      <img src="img/logo-afj.jpg" alt="Alliance Française de Jacmel" onerror="this.remove()">
+      <img src="img/logo-oif.jpg" alt="OIF" onerror="this.remove()">
+    </div>
+  </div>
+</section>
+
+<!-- ============ LE PROJET ============ -->
+<section id="projet">
+  <div class="wrap">
+    <h2 class="section-title"><i class="fa-solid fa-water"></i>Le projet : Sentinelles Alerte Sargasses</h2>
+    <p class="section-lead">Un projet environnemental et éducatif porté par l'Alliance Française de Jacmel.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3><i class="fa-solid fa-landmark"></i>Un cadre institutionnel</h3>
+        <p>
+          <b>ConjuguonsEco</b> est un jeu éducatif né dans le cadre du projet
+          <b>Sentinelles Alerte Sargasses</b>, porté par l'<b>Alliance Française de Jacmel</b>
+          entre 2021 et 2023.
+        </p>
+        <p>
+          Ce projet s'inscrit dans le <b>3<sup>e</sup> appel à initiatives de l'OIF</b>
+          pour la société civile francophone engagée pour les Objectifs de Développement Durable
+          (ODD). L'Alliance Française de Jacmel fait partie des organisations sélectionnées
+          en 2021 pour leur initiative en faveur des ODD.
+        </p>
+        <h3><i class="fa-solid fa-handshake"></i>Une démarche partenariale</h3>
+        <p>
+          L'association <b>Action pour un Développement Durable</b>, les étudiants finissants de
+          l'<b>Université Publique du Sud'Est à Jacmel</b> et <b>quatre communautés scolaires</b>
+          du Sud'Est ont pris part à la mise en œuvre du projet.
+        </p>
+        <p>
+          Les écoles partenaires : l'école <b>ICOSA de Cyvadier</b>, le <b>Lycée National Jacques Thélusmond</b>
+          de Raymond des Bains, l'école <b>La Dignité</b> de Pétavi et l'école <b>Saint Dominique</b> de Marigot.
+        </p>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-lightbulb"></i>Pourquoi ce jeu ?</h3>
+        <p>
+          Le jeu est né d'un constat de terrain : des <b>lacunes en conjugaison</b> ont été observées
+          chez les apprenants lors des cours de français dispensés par l'AFJ.
+        </p>
+        <p>
+          L'objectif est double : renforcer les compétences en conjugaison française
+          tout en sensibilisant à la protection de l'environnement et à la biodiversité haïtienne.
+        </p>
+        <h3><i class="fa-solid fa-globe"></i>Les Objectifs de Développement Durable</h3>
+        <p>
+          Le projet contribue à plusieurs ODD des Nations Unies, notamment l'<b>éducation de qualité</b>
+          (ODD 4), la <b>protection de la vie aquatique</b> (ODD 14) et la <b>vie terrestre</b> (ODD 15).
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LE JEU (illustration bg) ============ -->
+<section id="jeu" class="section-alt section-illus">
+  <div class="illus-bg" style="background-image:url('img/illus-jeu.png');background-position:right center;background-size:contain;opacity:.08"></div>
+  <div class="wrap">
+    <h2 class="section-title"><i class="fa-solid fa-gamepad"></i>Le jeu ConjuguonsEco</h2>
+    <p class="section-lead">Une application mobile éducative pour réviser plus de 500 verbes français.</p>
+
+    <div class="grid-3" style="margin-bottom:32px">
+      <div class="stat"><i class="fa-solid fa-map"></i><b>4</b><span>Parcours thématiques</span></div>
+      <div class="stat"><i class="fa-solid fa-flag"></i><b>16</b><span>Étapes de jeu</span></div>
+      <div class="stat"><i class="fa-solid fa-pen-fancy"></i><b>500+</b><span>Verbes à conjuguer</span></div>
+      <div class="stat"><i class="fa-solid fa-star"></i><b>3</b><span>Étoiles par étape</span></div>
+    </div>
+
+    <div class="card">
+      <h3><i class="fa-solid fa-route"></i>Les 4 parcours</h3>
+      <div class="grid-2" style="margin-top:16px">
+        <div class="level-card" style="background:linear-gradient(135deg,#c97a3a,#a85a1a)">
+          <i class="fa-solid fa-chess-rook"></i>
+          <b>A1 · La Citadelle</b>
+          <small>Patrimoine mondial de l'UNESCO, flore endémique et faune d'Haïti.</small>
+        </div>
+        <div class="level-card" style="background:linear-gradient(135deg,#4a8a3a,#2d5e20)">
+          <i class="fa-solid fa-mountain-sun"></i>
+          <b>A2 · Macaya</b>
+          <small>Réserve de biosphère, espèces endémiques, zagouti et solénodon.</small>
+        </div>
+        <div class="level-card" style="background:linear-gradient(135deg,#3a7a9a,#1f4e6e)">
+          <i class="fa-solid fa-water"></i>
+          <b>B1 · Aires marines</b>
+          <small>Récifs coralliens, sargasses, réemploi et recyclage.</small>
+        </div>
+        <div class="level-card" style="background:linear-gradient(135deg,#5a6a3a,#3a4a1a)">
+          <i class="fa-solid fa-tree"></i>
+          <b>B2 · La Visite</b>
+          <small>Forêt des Pins, pétrel diablotin et éducation à l'environnement.</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3><i class="fa-solid fa-circle-info"></i>Comment ça marche</h3>
+        <p>
+          Chaque étape propose un <b>texte à lire</b> sur un thème environnemental haïtien,
+          des <b>verbes à conjuguer</b> au temps demandé, des <b>rappels de grammaire</b>
+          et un <b>dictionnaire de mots cliquables</b>.
+        </p>
+        <p>
+          Le jeu suit la progression de la méthode <b>Édito</b> (niveaux A1 à B2),
+          utilisée dans l'enseignement du français.
+        </p>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-universal-access"></i>Accessibilité et progression</h3>
+        <p>
+          Le jeu intègre des réglages d'<b>accessibilité</b> : taille du texte, police adaptée
+          aux troubles dys, contraste élevé, réduction des animations, lecture audio.
+        </p>
+        <p>
+          Un système de <b>répétition espacée</b> fait revenir les verbes ratés après 1, 3 puis 7 jours.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SARGASSES ============ -->
+<section id="sargasses" class="section-illus" style="background:#fff">
+  <div class="illus-bg" style="background-image:url('img/illus-sargasses.jpg');background-position:left bottom;opacity:.10"></div>
+  <div class="wrap">
+    <h2 class="section-title"><i class="fa-solid fa-leaf"></i>Le contexte : les sargasses en Haïti</h2>
+    <p class="section-lead">Comprendre un phénomène environnemental majeur pour les Antilles.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3><i class="fa-solid fa-clock-rotate-left"></i>Un phénomène apparu en 2011</h3>
+        <p>
+          Depuis 2011, les côtes des Antilles et d'Afrique de l'Ouest connaissent des
+          <b>échouages massifs de sargasses</b>, une algue brune flottante.
+          Ces radeaux d'algues se décomposent sur les plages et libèrent du
+          <b>sulfure d'hydrogène</b>, un gaz irritant pour les yeux et les voies respiratoires.
+        </p>
+        <h3><i class="fa-solid fa-flask"></i>Une origine scientifique identifiée</h3>
+        <p>
+          Les recherches de l'<b>IRD</b> ont montré qu'un événement climatique exceptionnel —
+          une <b>oscillation nord-atlantique</b> de forte intensité en 2009-2010 —
+          a transporté des sargasses hors de leur zone habituelle vers l'Atlantique tropical.
+        </p>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-triangle-exclamation"></i>Les impacts en Haïti</h3>
+        <ul class="list-clean">
+          <li><b>Santé publique</b> : irritation des yeux et des voies respiratoires.</li>
+          <li><b>Environnement</b> : étouffement de la faune marine, perturbation des récifs et des mangroves.</li>
+          <li><b>Économie locale</b> : difficultés pour la pêche et le tourisme.</li>
+          <li><b>Cadre de vie</b> : détérioration des toitures en tôle dans certaines communes côtières.</li>
+        </ul>
+        <h3><i class="fa-solid fa-location-dot"></i>Communes les plus touchées</h3>
+        <p style="font-size:14px;color:var(--mut)">
+          Saint-Jean-du-Sud, Les Cayes, Saint-Louis-du-Sud, Côtes-de-Fer, Jacmel,
+          Cayes-Jacmel et Marigot.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ÉQUIPE ============ -->
+<section id="equipe" class="section-alt">
+  <div class="wrap">
+    <h2 class="section-title"><i class="fa-solid fa-users"></i>L'équipe du projet</h2>
+    <p class="section-lead">Les personnes qui ont conçu et réalisé ConjuguonsEco.</p>
+
+    <div class="card">
+      <ul class="team-list">
+        <li><i class="fa-solid fa-code"></i><b>Conception & développement</b> <span>Tégaud BELINE</span></li>
+        <li><i class="fa-solid fa-palette"></i><b>Illustration</b> <span>Chevelin PIERRE</span></li>
+        <li><i class="fa-solid fa-microscope"></i><b>Conseil scientifique</b> <span>Lens Jerry SAINT-LOUIS</span></li>
+        <li><i class="fa-solid fa-feather-pointed"></i><b>Textes</b> <span>Alliance Française de Jacmel (AFJ)</span></li>
+        <li><i class="fa-solid fa-music"></i><b>Musique</b> <span>Anthenor P. Normal BELLEVUE</span></li>
+      </ul>
+      <h3 style="margin-top:20px"><i class="fa-solid fa-heart"></i>Remerciements</h3>
+      <p style="font-size:14px;color:var(--mut)">
+        Au Conseil d'Administration de l'Alliance Française de Jacmel, à l'École Episcopale
+        St Dominique de Marigot, l'école ICOSA de Cyvadier, La Dignité de Pétavy Cayes-Jacmel
+        et le Lycée National Jacques Thélismond de Raymond Cayes-Jacmel.
+      </p>
+    </div>
+
+    <blockquote>
+      « Conjuguons Eco » vous invite à réviser vos conjugaisons en français
+      tout en vous faisant découvrir l'écocitoyenneté, le patrimoine et la biodiversité haïtiens.
+      <footer><i class="fa-solid fa-quote-right"></i>Alliance Française de Jacmel</footer>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============ MOT DU DÉVELOPPEUR ============ -->
+<section id="developpeur">
+  <div class="wrap">
+    <h2 class="section-title"><i class="fa-solid fa-code"></i>Le mot du développeur</h2>
+    <p class="section-lead">Derrière le jeu, quelques partis pris techniques et pédagogiques.</p>
+
+    <div class="card" style="padding:32px 34px">
+      <p style="font-size:16.5px;line-height:1.75;color:#3a4a32">
+        ConjuguonsEco est né d'une contrainte simple : les apprenants de l'Alliance Française
+        de Jacmel avaient besoin de réviser la conjugaison, mais les outils existants ne
+        parlaient ni de leur île, ni de leur environnement. J'ai donc construit le jeu
+        autour d'un principe : <b>le français s'apprend mieux quand il parle de ce qu'on connaît</b>.
+      </p>
+      <p style="font-size:16.5px;line-height:1.75;color:#3a4a32">
+        Trois choix ont guidé le développement. D'abord, <b>l'accessibilité</b> : taille du texte,
+        police adaptée aux troubles dys, contraste élevé, réduction des animations et lecture
+        audio, parce qu'un jeu éducatif doit pouvoir être utilisé par tous les élèves, pas
+        seulement les plus à l'aise. Ensuite, <b>le hors-ligne</b> : les connexions sont
+        irrégulières dans le Sud'Est, et une application qui ne fonctionne qu'avec Internet
+        aurait exclu une partie de son public. Enfin, <b>la répétition espacée</b> : un verbe
+        raté revient après 1, 3 puis 7 jours, parce que la mémorisation se construit dans le temps.
+      </p>
+      <p style="font-size:16.5px;line-height:1.75;color:#3a4a32">
+        Le jeu reste perfectible — c'est un projet pédagogique, pas un produit fini. Les retours
+        des enseignants et des élèves du Sud'Est ont déjà nourri plusieurs versions, et
+        continueront de le faire.
+      </p>
+      <div style="display:flex;align-items:center;gap:14px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line);flex-wrap:wrap">
+        <div style="width:48px;height:48px;border-radius:50%;background:var(--vert-doux);color:var(--vert-fonce);display:grid;place-items:center;font-size:18px;flex-shrink:0">
+          <i class="fa-solid fa-code"></i>
+        </div>
+        <div style="flex:1;min-width:180px">
+          <div style="font-weight:700;font-size:15px;color:var(--ink)">Tégaud BELINE</div>
+          <div style="font-size:13px;color:var(--mut)">Conception et développement du jeu</div>
+        </div>
+        <a href="https://github.com/monsieurbeline" target="_blank" rel="noopener"
+           style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--mut);text-decoration:none;padding:8px 14px;border:1px solid var(--line);border-radius:10px;transition:.15s"
+           onmouseover="this.style.borderColor='var(--vert)';this.style.color='var(--vert-fonce)'"
+           onmouseout="this.style.borderColor='var(--line)';this.style.color='var(--mut)'">
+          <i class="fa-brands fa-github"></i>Voir le dépôt
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="section-alt">
+  <div class="wrap">
+    <h2 class="section-title"><i class="fa-solid fa-circle-question"></i>Questions fréquentes</h2>
+    <p class="section-lead">Ce que les visiteurs, parents et enseignants nous demandent le plus souvent.</p>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary><i class="fa-solid fa-chevron-right"></i>Le jeu est-il gratuit ?</summary>
+        <div class="faq-answer">
+          <p>Oui, ConjuguonsEco est entièrement gratuit, sans publicité et sans achat intégré.
+          Le jeu a été développé dans le cadre d'un projet soutenu par l'OIF et l'Alliance
+          Française de Jacmel ; il n'a pas de modèle économique.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary><i class="fa-solid fa-chevron-right"></i>Faut-il créer un compte ou donner son nom ?</summary>
+        <div class="faq-answer">
+          <p>Non. Le jeu fonctionne sans inscription, sans email et sans collecte de données
+          personnelles. La progression est enregistrée uniquement sur l'appareil de l'utilisateur.
+          Le nom et la photo de profil sont facultatifs et servent seulement aux cartes de partage.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary><i class="fa-solid fa-chevron-right"></i>Le jeu fonctionne-t-il sans Internet ?</summary>
+        <div class="faq-answer">
+          <p>Oui, une fois installé sur l'écran d'accueil (Android/Chrome), le jeu fonctionne
+          hors-ligne. C'est un choix assumé, car les connexions sont irrégulières dans
+          certaines zones du Sud'Est d'Haïti.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary><i class="fa-solid fa-chevron-right"></i>Quels niveaux de français sont couverts ?</summary>
+        <div class="faq-answer">
+          <p>Le jeu couvre les niveaux A1 à B2, en suivant la progression de la méthode
+          <i>Édito</i> utilisée dans l'enseignement du français. Quatre parcours sont
+          proposés, de la Citadelle Laferrière au parc national La Visite.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary><i class="fa-solid fa-chevron-right"></i>À qui s'adresse le jeu ?</summary>
+        <div class="faq-answer">
+          <p>Aux élèves et apprenants de français, aux enseignants qui cherchent un support
+          complémentaire, et à toute personne qui souhaite réviser ses conjugaisons en
+          découvrant la biodiversité et le patrimoine haïtiens.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary><i class="fa-solid fa-chevron-right"></i>Peut-on l'utiliser en classe ?</summary>
+        <div class="faq-answer">
+          <p>Oui. Le jeu a été testé avec des communautés scolaires du Sud'Est d'Haïti.
+          Il peut servir de support d'entraînement individuel ou d'activité collective,
+          notamment avec un vidéoprojecteur.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary><i class="fa-solid fa-chevron-right"></i>Sur quels appareils le jeu fonctionne-t-il ?</summary>
+        <div class="faq-answer">
+          <p>Sur smartphone, tablette et ordinateur, via un navigateur récent. Une version
+          installable (PWA) est proposée sur Android et Chrome pour jouer depuis l'écran
+          d'accueil, même sans connexion.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary><i class="fa-solid fa-chevron-right"></i>Comment signaler un bug ou proposer une amélioration ?</summary>
+        <div class="faq-answer">
+          <p>Via l'Alliance Française de Jacmel (voir les liens en bas de page), ou directement
+          sur le dépôt GitHub du projet. Les retours d'enseignants et d'élèves ont déjà nourri
+          plusieurs versions du jeu.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESSOURCES ============ -->
+<section id="ressources">
+  <div class="wrap">
+    <h2 class="section-title"><i class="fa-solid fa-link"></i>Ressources et liens</h2>
+    <p class="section-lead">Pour approfondir le projet et le contexte environnemental.</p>
+
+    <div class="grid-2">
+      <div class="link-grid">
+        <a href="https://www.alliancefrancaise-haiti.org/jacmel/conjuguons-eco/" target="_blank" rel="noopener">
+          <i class="fa-solid fa-globe"></i>Page officielle ConjuguonsEco (Alliance Française en Haïti)
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
+        <a href="https://monsieurbeline.github.io/ConjuguonsEco-AFJ/" target="_blank" rel="noopener">
+          <i class="fa-solid fa-gamepad"></i>Jouer à ConjuguonsEco en ligne
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
+        <a href="http://www.alliancefrancaise-haiti.org/jacmel/contact/" target="_blank" rel="noopener">
+          <i class="fa-solid fa-envelope"></i>Contacter l'Alliance Française de Jacmel
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
+      </div>
+      <div class="link-grid">
+        <a href="https://www.francophonie.org/" target="_blank" rel="noopener">
+          <i class="fa-solid fa-earth-americas"></i>Organisation Internationale de la Francophonie (OIF)
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
+        <a href="https://lemag.ird.fr/fr/la-proliferation-des-sargasses-dans-latlantique-tropical-enfin-expliquee" target="_blank" rel="noopener">
+          <i class="fa-solid fa-flask"></i>IRD : comprendre la prolifération des sargasses
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
+        <a href="http://www.agriculture.gouv.ht/view/01/?Debarrasser-nos-cotes-des-algues" target="_blank" rel="noopener">
+          <i class="fa-solid fa-newspaper"></i>MARNDR : initiative contre les sargasses en Haïti
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:24px;text-align:center;padding:36px">
+      <h3 style="margin-bottom:8px;justify-content:center"><i class="fa-solid fa-share-nodes"></i>Un projet à découvrir, un jeu à partager</h3>
+      <p style="margin-bottom:20px">ConjuguonsEco est disponible gratuitement sur mobile et en ligne.</p>
+      <a href="https://monsieurbeline.github.io/ConjuguonsEco-AFJ/" class="btn btn-primary" target="_blank" rel="noopener" style="display:inline-flex">
+        <i class="fa-solid fa-play"></i>Accéder au jeu
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4><i class="fa-solid fa-seedling"></i>ConjuguonsEco</h4>
+      <p>
+        Jeu éducatif de conjugaison française, réalisé dans le cadre du projet
+        Sentinelles Alerte Sargasses (2021–2023), porté par l'Alliance Française de Jacmel
+        avec le soutien de l'Organisation Internationale de la Francophonie.
+      </p>
+      <div class="footer-logos">
+        <img src="img/logo-afj.jpg" alt="Alliance Française de Jacmel" onerror="this.remove()">
+        <img src="img/logo-oif.jpg" alt="OIF" onerror="this.remove()">
+      </div>
+    </div>
+    <div>
+      <h4><i class="fa-solid fa-compass"></i>Navigation</h4>
+      <p><a href="#projet">Le projet</a></p>
+      <p><a href="#jeu">Le jeu</a></p>
+      <p><a href="#sargasses">Sargasses</a></p>
+      <p><a href="#equipe">Équipe</a></p>
+      <p><a href="#developpeur">Le développeur</a></p>
+      <p><a href="#faq">FAQ</a></p>
+      <p><a href="#ressources">Ressources</a></p>
+    </div>
+    <div>
+      <h4><i class="fa-solid fa-address-book"></i>Contact AFJ</h4>
+      <p><i class="fa-solid fa-location-dot"></i>37, angle Rue Seymour Pradel<br>
+         <span style="margin-left:22px">et Avenue de la Liberté</span><br>
+         <span style="margin-left:22px">BP 83, HT9110, Jacmel, Haïti</span></p>
+      <p><i class="fa-solid fa-phone"></i>(+509) 3626-0424</p>
+      <p><i class="fa-solid fa-envelope"></i><a href="mailto:info.jacmel@alliancefrancaise-haiti.org">info.jacmel@alliancefrancaise-haiti.org</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2021–2023 Alliance Française de Jacmel · Projet Sentinelles Alerte Sargasses · Soutenu par l'OIF
+  </div>
+</footer>
+
+<button id="topBtn" aria-label="Retour en haut"><i class="fa-solid fa-arrow-up"></i></button>
+
+<script>
+(function(){
+  // Menu mobile
+  var toggle=document.getElementById('navToggle'),nav=document.getElementById('siteNav');
+  toggle.addEventListener('click',function(){
+    var open=nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded',open);
+    toggle.innerHTML=open?'<i class="fa-solid fa-xmark"></i>':'<i class="fa-solid fa-bars"></i>';
+  });
+  nav.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(){
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded','false');
+      toggle.innerHTML='<i class="fa-solid fa-bars"></i>';
+    });
+  });
+
+  // Header shadow + bouton haut
+  var header=document.getElementById('header');
+  var topBtn=document.getElementById('topBtn');
+  window.addEventListener('scroll',function(){
+    header.classList.toggle('scrolled',window.scrollY>20);
+    topBtn.classList.toggle('show',window.scrollY>400);
+  },{passive:true});
+  topBtn.addEventListener('click',function(){scrollTo({top:0,behavior:'smooth'})});
+
+  // Hero parallax
+  var heroBg=document.getElementById('heroBg');
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(heroBg&&!reduced){
+    var ticking=false;
+    window.addEventListener('scroll',function(){
+      if(!ticking){
+        requestAnimationFrame(function(){
+          var y=window.scrollY;
+          if(y<window.innerHeight){
+            heroBg.style.transform='translate3d(0,'+(y*0.4)+'px,0)';
+          }
+          ticking=false;
+        });
+        ticking=true;
+      }
+    },{passive:true});
+  }
+})();
+</script>
+
+</body>
+</html>
