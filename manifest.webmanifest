@@ -1,1 +1,49 @@
-{"name":"ConjuguonsEco","short_name":"ConjuguonsEco","description":"Jeu de conjugaison en français autour de la biodiversité d’Haïti","lang":"fr","start_url":"./index.html","scope":"./","display":"standalone","orientation":"portrait","background_color":"#f6f4ee","theme_color":"#166534","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]}
+{
+  "id": "./",
+  "name": "ConjuguonsEco",
+  "short_name": "ConjuguonsEco",
+  "description": "Jeu de conjugaison en français autour de la biodiversité d’Haïti",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "fullscreen",
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#f6f4ee",
+  "theme_color": "#2e9e3f",
+  "categories": [
+    "education",
+    "games"
+  ],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
